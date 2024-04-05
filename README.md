@@ -1,4 +1,7 @@
 # Fitting Poisson  distribution
+Developed by : Alan samuel
+Register number : 212223040012
+
 # Aim : 
 
 To fit poisson distribution for the arrival of objects per minute from the feeder
@@ -29,10 +32,63 @@ The Poisson distribution is the discrete probability distribution of the number 
 ![image](https://user-images.githubusercontent.com/103921593/230282876-f4a5afbf-cac1-4648-a1b0-c78840638a8e.png)
 
 # Program :
-
+import numpy as np
+import math
+import scipy.stats
+L=[int(i) for i in input().split()]
+N=len(L); M=max(L) 
+X=list();f=list()
+for i in range (M+1):
+    c = 0
+    for j in range(N):
+        if L[j]==i:
+            c=c+1
+    f.append(c)
+    X.append(i)
+sf=np.sum(f)
+p=list()
+for i in range(M+1):
+    p.append(f[i]/sf) 
+mean=np.inner(X,p)
+p=list();E=list();xi=list()
+print("X P(X=x) Obs.Fr Exp.Fr xi")
+print("--------------------------")
+for x in range(M+1):
+    p.append(math.exp(-mean)*mean**x/math.factorial(x))
+    E.append(p[x]*sf)
+    xi.append((f[x]-E[x])**2/E[x])
+    print("%2.2f %2.3f %4.2f %3.2f %3.2f"%(x,p[x],f[x],E[x],xi[x]))
+print("--------------------------")
+cal_chi2_sq=np.sum(xi)
+print("Calculated value of Chi square is %4.2f"%cal_chi2_sq)
+table_chi2=scipy.stats.chi2.ppf(1-.01,df=M)
+print("Table value of chi square at 1 level is %4.2f"%table_chi2)
+if cal_chi2_sq<table_chi2:
+    print("The given data can be fitted in poisson Distribution at 1% LOS")
+else:
+    print("The given data cannot be fitted in Poisson Distribution at 1% LOS")
  
 
 # Output : 
+Input:
+8 7 6 5 4 3 2 1
+Output:
+X P(X=x) Obs.Fr Exp.Fr xi
+--------------------------
+0.00 0.011 0.00 0.09 0.09
+1.00 0.050 1.00 0.40 0.90
+2.00 0.112 1.00 0.90 0.01
+3.00 0.169 1.00 1.35 0.09
+4.00 0.190 1.00 1.52 0.18
+5.00 0.171 1.00 1.37 0.10
+6.00 0.128 1.00 1.02 0.00
+7.00 0.082 1.00 0.66 0.18
+8.00 0.046 1.00 0.37 1.07
+--------------------------
+Calculated value of Chi square is 2.61
+Table value of chi square at 1 level is 20.09
+The given data can be fitted in poisson Distribution at 1% LOS
+
 
 
 
